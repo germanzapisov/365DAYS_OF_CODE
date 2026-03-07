@@ -1,5 +1,4 @@
 import time
-import logging
 from config import logger
 
 
@@ -22,22 +21,38 @@ class Hero:
         logger.debug("information about the character is displayed")
         return f" The hero has {self.health} HP and {self.damage} damage"
 
+    def take_damage(self, dmg):
+        self.health -= dmg
+
+    def loading_battle(self):
+        for _ in range(1, 11):
+            print("_-", end="")
+            time.sleep(0.15)
+
     def attack(self, other):
         logger.debug("the battle has begun")
         count = 0
-        while True:
+        time.sleep(0.1)
+        for i in range(1, 100):
             if count % 2 == 0:
-                other.health -= self.damage
-                print(f"{other} hp: {other.health}\n")
+                self.loading_battle()
+                print(f"\nround: {i} {self} hits {other}")
+                time.sleep(1.3)
+                other.take_damage(self.damage)
+                print(f"{self} hits {other}, {other} has {other.health} hp left\n")
+                time.sleep(1.6)
                 count += 1
                 if other.health <= 0:
                     print(f"The enemy {other} is defeated!")
                     logger.debug("the fight is over")
                     break
-
             else:
-                self.health -= other.damage
-                print(f"{self} hp: {self.health}\n")
+                self.loading_battle()
+                print(f"\nround {i} {other} hits {self}")
+                time.sleep(1.3)
+                self.take_damage(other.damage)
+                print(f"{other} hits {self}, {self} has {self.health} hp left\n")
+                time.sleep(1.6)
                 count += 1
                 if self.health <= 0:
                     logger.debug("the fight is over")
@@ -85,9 +100,27 @@ class Prince(Hero):
     constructor __str__(): Returns character type
     """
 
-    def __init__(self, health, damage, shield):
+    def __init__(self, health, damage, shield, boolean_false=False):
         super().__init__(health, damage)
         self.shield = shield
+        self.boolean_false = boolean_false
+
+    def take_damage(self, dmg):
+        if self.shield > 0:
+            if dmg <= self.shield:
+                self.shield -= dmg
+                dmg = 0
+                print(
+                    f"The shield repelled the attack! Remaining shield strength: {self.shield}"
+                )
+            else:
+                dmg -= self.shield
+                self.shield = 0
+        if self.shield <= 0:
+            if not self.boolean_false:
+                print("the shield is broken!")
+                boolean_false = True
+        self.health -= dmg
 
     def defense(self, incoming_damage):
         if self.shield > 0:
@@ -105,8 +138,8 @@ class Prince(Hero):
 
 
 def initializing_characters():
-    prince = Prince(130, 40, 40)
-    doctor = Doctor(115, 20, 15)
+    prince = Prince(120, 40, 40)
+    doctor = Doctor(215, 20, 15)
     return prince, doctor
 
 
