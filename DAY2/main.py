@@ -1,6 +1,12 @@
 import time
 from config import logger
 
+YELLOW = "\033[33m"
+GREEN = "\033[32m"
+PURPLE = "\033[35m"
+BLUE = "\033[36m"
+RESET = "\033[0m"
+
 
 class Hero:
     """
@@ -25,35 +31,40 @@ class Hero:
         self.health -= dmg
 
     def loading_battle(self):
-        for _ in range(1, 11):
-            print("_-", end="")
-            time.sleep(0.15)
+        for _ in range(1, 13):
+            print(f"{YELLOW}||{RESET}{GREEN}", end="")
+            time.sleep(0.1)
 
     def attack(self, other):
         logger.debug("the battle has begun")
         count = 0
         time.sleep(0.1)
+        turn_on = True
         for i in range(1, 100):
-            if count % 2 == 0:
+            if turn_on:
                 self.loading_battle()
-                print(f"\nround: {i} {self} hits {other}")
+                print(f"\nround {i} {PURPLE}{self}{RESET} hits {BLUE}{other}{RESET}")
                 time.sleep(1.3)
                 other.take_damage(self.damage)
-                print(f"{self} hits {other}, {other} has {other.health} hp left\n")
+                print(
+                    f"{self} hits {BLUE}{other}{RESET}, {BLUE}{other}{RESET} has {GREEN}{other.health}hp{RESET} left\n"
+                )
                 time.sleep(1.6)
-                count += 1
+                turn_on = False
                 if other.health <= 0:
                     print(f"The enemy {other} is defeated!")
                     logger.debug("the fight is over")
                     break
             else:
                 self.loading_battle()
-                print(f"\nround {i} {other} hits {self}")
+                print(f"\nround {i} {BLUE}{other}{RESET} hits {PURPLE}{self}{RESET}")
                 time.sleep(1.3)
                 self.take_damage(other.damage)
-                print(f"{other} hits {self}, {self} has {self.health} hp left\n")
+                print(
+                    f"{BLUE}{other}{RESET} hits {PURPLE}{self}{RESET}, {PURPLE}{self}{RESET} has {GREEN}{self.health}hp{RESET} left\n"
+                )
                 time.sleep(1.6)
-                count += 1
+                turn_on = True
                 if self.health <= 0:
                     logger.debug("the fight is over")
                     print(f"Our character {self}  is defeated!")
@@ -75,11 +86,13 @@ class Doctor(Hero):
         super().__init__(health, damage)
         self.regeneration = regeneration
 
-    def regeneration_hp(self):
-        if self.health <= 105:
+    def take_damage(self, dmg):
+        if self.health <= 115:
             self.health += self.regeneration
+            print(f"{self} Received healing equal to {self.regeneration}HP!")
+            self.health -= dmg
         else:
-            print("you already have a lot of health")
+            self.health -= dmg
 
     def __str__(self):
         return "Doctor"
@@ -119,15 +132,8 @@ class Prince(Hero):
         if self.shield <= 0:
             if not self.boolean_false:
                 print("the shield is broken!")
-                boolean_false = True
+                self.boolean_false = True
         self.health -= dmg
-
-    def defense(self, incoming_damage):
-        if self.shield > 0:
-            self.shield -= incoming_damage
-            if self.shield < 0:
-                self.health += self.shield
-                self.shield = 0
 
     def info(self):
         text = super().info()
@@ -138,8 +144,8 @@ class Prince(Hero):
 
 
 def initializing_characters():
-    prince = Prince(120, 40, 40)
-    doctor = Doctor(215, 20, 15)
+    prince = Prince(160, 40, 40)
+    doctor = Doctor(215, 25, 15)
     return prince, doctor
 
 
@@ -151,10 +157,10 @@ def menu():
                 input(
                     """          
                 Select the desired action:
-                1 - Play as the Mage against the Prince
-                2 - Play as the Prince against the Mage
-                3 - Display information about a character
-                4 - Exit
+                1 - \033[35mPlay as the Mage against the Prince\033[0m
+                2 - \033[35mPlay as the Prince against the Mage\033[0m
+                3 - \033[33mDisplay information about a character\033[0m
+                4 - \033[32mExit\033[0m
                 >>
                         """.strip()
                 )
