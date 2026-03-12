@@ -1,6 +1,7 @@
 from pathlib import Path
 import logging
 
+
 # paths
 path_logs = Path.cwd() / "logs"
 path_logs.mkdir(exist_ok=True)

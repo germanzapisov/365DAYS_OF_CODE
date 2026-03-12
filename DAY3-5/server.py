@@ -30,17 +30,21 @@ async def handler(websocket):
             clients[websocket] = name
             logger.debug(f"{name} the user has connected")
         async for msg in websocket:
+            print(msg)
             if msg == "/exit":
                 logger.info("user disconnected")
                 await websocket.close()
                 break
             else:
                 for c, c_name in clients.items():
-                    if c != websocket:
-                        try:
-                            await c.send(f"{name}: {msg}")
-                        except websockets.ConnectionClosed:
-                            clients.pop(c, None)
+                    if msg.startswith("/check"):
+                        await c.send("server alive")
+                    else:
+                        if c != websocket:
+                            try:
+                                await c.send(f"{msg}")
+                            except websockets.ConnectionClosed:
+                                clients.pop(c, None)
     except websockets.exceptions.ConnectionClosedOK:
         logger.info("user disconnected")
         clients.pop(websocket, None)
@@ -53,13 +57,12 @@ async def main():
     """
     host = "localhost"
     port = 5000
-    server = await websockets.serve(handler,
-                                    host,
-                                    port,
-                                    ping_interval=20,
-                                    ping_timeout=60)
+    server = await websockets.serve(
+        handler, host, port, ping_interval=20, ping_timeout=60
+    )
+    data_server = server.sockets[0].getsockname()
     print(f"{timer()} | server is running")
-    logger.debug("server is running")
+    logger.debug(f"server is running {data_server}")
     await asyncio.Future()
 
 
