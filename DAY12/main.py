@@ -1,85 +1,50 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 import uvicorn
-from pydantic import BaseModel
-
-
-class Name(BaseModel):
-    name: str
-
-
-class Monument(BaseModel):
-    title: str
-    price: int
-
+from pydantic import BaseModel, Field
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+templates = Jinja2Templates(directory='templates')
+app.mount('/static', StaticFiles(directory='static'), name='static')
 
 monuments = {
-        "granite": 15000,
-        "marble": 35000,
-        'limestone': 54000
-     }
+    "cobblestone": 45000,
+    "granite": 25000,
+    "marble": 20000,
+    "limestone": 50000,
+    "quartz": 30000
+}
 
 
-name = {
-    "name": "guest"
-    }
-
-
-@app.get("/",
-         summary="Username here",
-         description="Returns the username",
-         tags=['main', 'main_get']
-         )
-def main_get():
-    if not name:
-        raise HTTPException(status_code=404, detail='Not Found')
-    return name
-
-
-@app.post("/",
-            summary="Username here",
-            description="Gets the username",
-            tags=['main', 'main_post']
-)
-def main_post(user: Name):
-    name["name"] = user.name
-    return {'message': f"Welcome! {name['name']}"}
+class MonumentsSchema(BaseModel):
+    title: str = Field(max_length=30)
+    price:  int = Field(gt=0)
 
 
 @app.get("/monuments",
-         summary='monuments here',
-         description='gets all monuments',
-         tags=['monuments', 'monuments_get'])
-def func_monument():
+         summary='get_monuments',
+         description='returns all monuments',
+         tags=['monuments', 'get'])
+def get_monuments(request: Request):
     if not monuments:
-        raise HTTPException(status_code=404, detail='Not found')
-    return monuments
+        raise HTTPException(status_code=404, detail='Not Found')
+    return templates.TemplateResponse('index.html', {'request': request,
+                                                     "monuments": monuments
+                                                     }
+                                      )
 
 
-@app.post("/monuments",
-            summary="monuments here",
-            description = "receives all the monuments",
-            tags=['monuments', 'monuments_post']
-          )
-
-
-def add_monument(monument: Monument):
+@app.post("/monuments/add/",
+          summary='post_monuments',
+          description='add new monument',
+          tags=['monuments', 'post'])
+def post_monuments(monument: MonumentsSchema):
     monuments[monument.title] = monument.price
-    return {"message": f"Monument '{monument.title}' added", "monuments": monuments}
-
-
-@app.put("/monuments/{title}")
-def updater_monument(title: str, monument: Monument):
-    if not title in monuments:
-        raise HTTPException(status_code=404, detail="Not found")
-    monuments[title] = monument.price
-    return {'message': f"update! {title}, {monuments}"}
+    return {'message': 'ok'}
 
 
 if __name__ == "__main__":
     uvicorn.run("main:app",
-                host = '127.0.0.1',
-                port = 5000,
+                port = 5003,
                 reload=True)
-
