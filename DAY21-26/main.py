@@ -38,7 +38,7 @@ if __name__ == "__main__":
     url = os.getenv('URL')
     session = requests.Session()
     response = session.post(url, headers=headers, json=data, timeout=5)
-
+    response.raise_for_status()
 
     post(response)
     get_and_soup(response)

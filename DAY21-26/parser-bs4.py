@@ -19,6 +19,9 @@ for i in soup.find_all('div', class_='podbor__chord'):
     for c in i.children:
         print(c.get_text(strip=True))
 
+for i in soup.select('div > a'):
+    print(i.get_text())
+
 params = {
     'q': 'London',
     'appid': 'c313aff6a85060c28ce1ff391e718adc'
@@ -27,6 +30,7 @@ params = {
 session = requests.Session()
 url = 'https://api.openweathermap.org/data/2.5/weather'
 response = session.get(url, params=params, headers=headers)
+response.raise_for_status()
 
 text = response.json()
 
