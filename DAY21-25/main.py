@@ -30,7 +30,7 @@ if __name__ == "__main__":
     }
 
     headers = {
-        'User-Agent': 'Mozilla/5.0 | (Windows 10 AT win x64)',
+        'User-Agent': 'Mozilla/5.0 (Windows 10 AT win64 x64)',
         'Accept': 'text/html',
         "Accept-Language": "ru-RU,ru;q=0.9"
     }
