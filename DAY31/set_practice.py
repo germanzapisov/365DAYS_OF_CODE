@@ -60,40 +60,46 @@ vip_players = set([
             'viperr',
             'andrew24'])
 
-def remove_players(vip_players, players):
-    choice_remove = input("Введите имя игрока для удаления")
-    vip_players.remove(choice_remove)
-    players.add(choice_remove)
+admins = frozenset([
+    'mirgin23',
+    'alexxs'
+])
+
+
+def remove_players(vip, basic):
+    choice_remove = input("Введите имя игрока для удаления: ")
+    vip.remove(choice_remove)
+    basic.add(choice_remove)
     return vip_players, players
 
-def add_players(vip_players, players):
-    choice_add = input("Введите имя игрока для добавления")
+def add_players(vip, basic):
+    choice_add = input("Введите имя игрока для добавления: 1")
     vip_players.add(choice_add)
     players.remove(choice_add)
-    return vip_players, players
+    return vip, basic
 
 
-def all_players(vip_players, players):
-    all_players = vip_players.union(players)
+def all_players(vip, basic):
+    all_players = vip.union(basic)
     print(all_players)
     return all_players
 
-def return_players(players):
+def return_players(basic):
     print(players)
-    return players
+    return basic
 
-def return_vip_players(vip_players):
-    print(vip_players)
-    return vip_players
+def return_vip_players(vip):
+    print(vip)
+    return vip
 
-def pop_players(vip_players, players):
-    lucky_player = players.pop()
-    vip_players.add(lucky_player)
+def pop_players(vip, basic):
+    lucky_player = basic.pop()
+    vip.add(lucky_player)
     return vip_players, players
 
-def clear_players(vip_players,players):
-    vip_players_new = vip_players.copy()
-    players_new = players.copy()
+def clear_players(vip,basic):
+    vip_players_new = vip.copy()
+    players_new = basic.copy()
     vip_players.clear()
     players.clear()
     return vip_players_new, players_new
@@ -109,7 +115,9 @@ def menu():
                              4 - Вернуть обычных игроков
                              5 - Вернуть вип игроков
                              6 - Добавить случайного игрока в випы
-                             7 - Удалить всех игроков"""))
+                             7 - Удалить всех игроков
+                             >> """))
+
         if main_asc == 1:
             add_players(vip_players, players)
         elif main_asc == 2:
