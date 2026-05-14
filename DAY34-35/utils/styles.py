@@ -10,15 +10,19 @@ def apply_styles_page_one(window, logo_text, input_name, input_lastname, button)
     """)
 
     input_name.setStyleSheet("""
-        padding: 10px 30px;
+        padding: 17px 30px;
+        background-color: rgba(40, 90, 140, 220);
+        border: none;
     """)
 
     input_lastname.setStyleSheet("""
-        padding: 10px 30px;
+        padding: 17px 30px;
+        background-color: rgba(40, 90, 140, 220);
+        border: none;
     """)
 
     button.setStyleSheet("""
-        background-color: black;
+        background-color: rgba(25, 60, 110, 230);
         color: white;
         border-radius: 40px;
         border: none;

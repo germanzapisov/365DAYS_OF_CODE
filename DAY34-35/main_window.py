@@ -4,8 +4,8 @@ from PyQt6.QtWidgets import (
 from utils import *
 
 
+
 def open_main_window(username):
-    window_main.setLayout(layout_main)
 
     window_main.setFixedSize(500, 500)
 
