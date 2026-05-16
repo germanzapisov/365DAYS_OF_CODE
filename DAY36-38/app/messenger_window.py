@@ -1,9 +1,11 @@
 from PyQt6.QtWidgets import (QLabel,
+                             QWidget,
                              QLineEdit,
                              QPushButton,
                              QRadioButton,
                              QTextEdit,
-                            QScrollArea
+                             QScrollArea,
+                             QVBoxLayout
                              )
 
 from PyQt6.QtCore import Qt
@@ -23,6 +25,12 @@ button = QPushButton("send")
 text = QLineEdit()
 light_swither = QRadioButton('light theme')
 dark_swither = QRadioButton('dark theme')
+scroll = QScrollArea()
+chat = QWidget()
+messages_layout = QVBoxLayout(chat)
+success = QLabel()
+
+
 
 def switch_theme():
     if dark_swither.isChecked():
@@ -32,12 +40,11 @@ def switch_theme():
 
 
 text.setPlaceholderText("input the message")
-chat = QTextEdit()
-success = QLabel()
 
 button.setFixedWidth(400)
 text.setFixedWidth(400)
 chat.setFixedWidth(400)
+scroll.setFixedWidth(400)
 light_swither.setFixedSize(200, 30)
 dark_swither.setFixedSize(200, 30)
 
@@ -50,10 +57,13 @@ logo_label.setPixmap(scaled)
 layout.addWidget(logo_label, 0, 0)
 switch_layout.addWidget(light_swither)
 switch_layout.addWidget(dark_swither)
+scroll.setWidget(chat)
+scroll.setWidgetResizable(True)
+
 layout.addWidget(text, 1, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
 layout.addWidget(button, 3, 0, alignment=Qt.AlignmentFlag.AlignHCenter)
 layout.addWidget(success, 4, 0, alignment=Qt.AlignmentFlag.AlignHCenter)
-layout.addWidget(chat,  5, 0, alignment=Qt.AlignmentFlag.AlignHCenter)
+layout.addWidget(scroll, 6, 0)
 
 layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 light_swither.toggled.connect(switch_theme)

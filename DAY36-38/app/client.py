@@ -2,7 +2,8 @@ import asyncio
 import websockets
 from messenger_window import *
 from encryption import encryption, decryption
-
+from PyQt6.QtWidgets import QLabel
+from utils import *
 
 async def send(websocket):
     if text.text():
@@ -17,7 +18,12 @@ async def send(websocket):
 
 async def listen(websocket):
     async for msg in websocket:
-        chat.append(f"{decryption(msg.encode())}")
+        print(msg)
+        label = QLabel(decryption(msg.encode()))
+        label.setFixedHeight(55)
+        style_for_messages(label)
+        label.show()
+        messages_layout.addWidget(label)
 
 
 def send_message():

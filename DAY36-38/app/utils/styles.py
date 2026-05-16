@@ -81,3 +81,12 @@ def apply_dark_theme(window):
                 padding: 0px;
             """
     )
+
+def style_for_messages(label):
+    label.setStyleSheet("""
+        background-color: white;
+        font-size: 18px;
+        color: rgba(0, 122, 255, 0.9);
+        border: none;
+        border-radius: 25px;
+        """)
